@@ -1,0 +1,45 @@
+name: CheckPullRequest
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  delete-comments:
+    name: Delete bot comment(s)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: izhangzhihao/delete-comment@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          delete_user_name: github-actions[bot]
+          issue_number: ${{ github.event.number }}
+
+  branch-naming-rules:
+    name: Check branch name
+    runs-on: ubuntu-latest
+    steps:
+      - uses: deepakputhraya/action-branch-name@master
+        with:
+          regex: '^(feature|bugfix|improvement|library|prerelease|release|hotfix)\/[a-z0-9_.-]+$'
+          allowed_prefixes: 'feature,bugfix,improvement,library,prerelease,release,hotfix'
+          ignore: main
+          min_length: 5
+          max_length: 50
+
+  commit-message-check:
+    name: Commit message check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Check commit message with semantic-version plugin
+        run: mvn -ntp io.github.zorin95670:semantic-version:0.4.0:check-commit -DnoMerge=true
