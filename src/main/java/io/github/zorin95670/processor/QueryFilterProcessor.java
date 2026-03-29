@@ -21,16 +21,16 @@ import javax.tools.Diagnostic;
 import java.util.Set;
 
 /**
- * Annotation processor responsible for handling {@link QueryFilter} annotations.
+ * Annotation processor responsible for handling QueryFilter annotations.
  * <p>
- * This processor scans all classes annotated with {@link QueryFilter} during
+ * This processor scans all classes annotated with QueryFilter during
  * compilation and delegates the generation of corresponding DTO classes
- * to a {@link QueryFilterGenerator} implementation.
+ * to a QueryFilterGenerator implementation.
  * </p>
  *
  * <p>
  * It uses the Java Annotation Processing API to inspect annotated elements
- * and generate additional source files via the {@link Filer}.
+ * and generate additional source files via the Filer.
  * </p>
  */
 @AutoService(Processor.class)
@@ -50,6 +50,12 @@ public class QueryFilterProcessor extends AbstractProcessor {
     private Elements elementUtils;
 
     /**
+     * Default constructor.
+     */
+    public QueryFilterProcessor() {
+        super();
+    }
+    /**
      * Initializes the processor with the given processing environment.
      *
      * @param processingEnv the environment provided by the annotation processing tool
@@ -62,14 +68,14 @@ public class QueryFilterProcessor extends AbstractProcessor {
     }
 
     /**
-     * Processes all elements annotated with {@link QueryFilter}.
+     * Processes all elements annotated with QueryFilter.
      * <p>
      * For each annotated class, this method:
      * <ul>
      *     <li>Validates that the element is a class</li>
-     *     <li>Retrieves the {@link QueryFilter} annotation</li>
+     *     <li>Retrieves the QueryFilter annotation</li>
      *     <li>Resolves the target DTO name</li>
-     *     <li>Delegates code generation to a {@link QueryFilterGenerator}</li>
+     *     <li>Delegates code generation to a QueryFilterGenerator</li>
      * </ul>
      *
      * @param annotations the set of annotations requested to be processed
@@ -103,11 +109,11 @@ public class QueryFilterProcessor extends AbstractProcessor {
     /**
      * Resolves the generator implementation to use for the given annotation.
      * <p>
-     * Currently returns a {@link QueryFilterDtoGenerator}, but can be extended
+     * Currently returns a QueryFilterDtoGenerator, but can be extended
      * to support multiple generator strategies.
      *
-     * @param annotation the {@link QueryFilter} annotation instance
-     * @return a configured {@link QueryFilterGenerator}
+     * @param annotation the QueryFilter annotation instance
+     * @return a configured QueryFilterGenerator
      */
     private QueryFilterGenerator resolveGenerator(QueryFilter annotation) {
         return new QueryFilterDtoGenerator(filer, elementUtils, processingEnv);
@@ -119,7 +125,7 @@ public class QueryFilterProcessor extends AbstractProcessor {
      * If a custom name is provided in the annotation, it is used.
      * Otherwise, a default name is generated based on the annotated type.
      *
-     * @param annotation the {@link QueryFilter} annotation
+     * @param annotation the QueryFilter annotation
      * @param typeElement the annotated class element
      * @return the resolved DTO class name
      */

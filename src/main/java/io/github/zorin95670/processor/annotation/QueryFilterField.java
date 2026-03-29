@@ -9,8 +9,8 @@ import java.lang.annotation.Target;
  * Annotation used to describe a field as part of a generated query filter DTO.
  * <p>
  * Each annotated field contributes to the generation of a query parameter
- * represented as a {@link String} in the generated DTO. The actual filtering
- * behavior is driven by the declared {@link #type()}, which defines the
+ * represented as a String in the generated DTO. The actual filtering
+ * behavior is driven by the declared type, which defines the
  * allowed operators and how the value is interpreted when building the query.
  * </p>
  *
@@ -25,8 +25,7 @@ public @interface QueryFilterField {
     /**
      * Defines the semantic type of the field being filtered in the data source.
      * <p>
-     * This type does <b>not</b> impact the generated DTO field type (which is always
-     * {@link String}), but determines:
+     * This type does <b>not</b> impact the generated DTO field type (which is always String), but determines:
      * </p>
      * <ul>
      *     <li>The set of supported filtering operators</li>

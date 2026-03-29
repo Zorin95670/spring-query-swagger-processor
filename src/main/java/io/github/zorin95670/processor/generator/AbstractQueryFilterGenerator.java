@@ -20,21 +20,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Base implementation of {@link QueryFilterGenerator} providing common utilities
+ * Base implementation of QueryFilterGenerator providing common utilities
  * for generating query filter DTOs.
  * <p>
  * This class centralizes reusable logic for:
  * </p>
  * <ul>
- *     <li>Resolving fields annotated with {@link QueryFilterField}, including inherited ones</li>
- *     <li>Writing generated source files באמצעות {@link Filer}</li>
+ *     <li>Resolving fields annotated with QueryFilterField, including inherited ones</li>
+ *     <li>Writing generated source files באמצעות Filer</li>
  *     <li>Building Swagger / OpenAPI annotations for generated DTO fields</li>
  *     <li>Providing example values based on the semantic filter type</li>
  * </ul>
  *
  * <p>
- * Generated DTO fields are always of type {@link String}, but their behavior
- * (supported operators, parsing, etc.) is driven by the {@link QueryFilterField#type()}.
+ * Generated DTO fields are always of type String, but their behavior
+ * (supported operators, parsing, etc.) is driven by the QueryFilterField type.
  * </p>
  */
 public abstract class AbstractQueryFilterGenerator implements QueryFilterGenerator {
@@ -68,7 +68,7 @@ public abstract class AbstractQueryFilterGenerator implements QueryFilterGenerat
     }
 
     /**
-     * Retrieves all fields annotated with {@link QueryFilterField} from the given class,
+     * Retrieves all fields annotated with QueryFilterField from the given class,
      * including fields declared in its superclass hierarchy.
      *
      * @param clazz the root class to inspect
@@ -94,7 +94,7 @@ public abstract class AbstractQueryFilterGenerator implements QueryFilterGenerat
     }
 
     /**
-     * Writes the generated {@link JavaFile} to the filer.
+     * Writes the generated JavaFile to the filer.
      *
      * @param javaFile the file to write
      */
@@ -123,12 +123,12 @@ public abstract class AbstractQueryFilterGenerator implements QueryFilterGenerat
      * The annotation includes:
      * </p>
      * <ul>
-     *     <li>Description and required flag from {@link QueryFilterField}</li>
+     *     <li>Description and required flag from QueryFilterField</li>
      *     <li>Example values illustrating supported filtering operators</li>
      * </ul>
      *
      * @param field the annotated field
-     * @return the constructed {@link AnnotationSpec}
+     * @return the constructed AnnotationSpec
      */
     protected AnnotationSpec buildSchemaAnnotation(Element field) {
         QueryFilterField annotation = field.getAnnotation(QueryFilterField.class);
@@ -199,7 +199,7 @@ public abstract class AbstractQueryFilterGenerator implements QueryFilterGenerat
 
     /**
      * Resolves the fully qualified name of the type declared in
-     * {@link QueryFilterField#type()} without triggering class loading.
+     * QueryFilterField type without triggering class loading.
      *
      * @param field the annotated field
      * @return the fully qualified type name
