@@ -35,7 +35,7 @@ public @interface QueryFilter {
      * Specifies the type of artifact to generate.
      * <p>
      * This allows selecting different generation strategies.
-     * Currently, only {@link Type#DTO} is supported.
+     * Currently, only Type#DTO is supported.
      * </p>
      *
      * @return the generation type

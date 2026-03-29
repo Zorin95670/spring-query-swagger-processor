@@ -22,20 +22,20 @@ import java.util.List;
 import static com.squareup.javapoet.JavaFile.*;
 
 /**
- * Concrete implementation of {@link QueryFilterGenerator} responsible for generating
+ * Concrete implementation of QueryFilterGenerator responsible for generating
  * query filter DTO classes.
  * <p>
  * This generator produces a DTO where:
  * </p>
  * <ul>
- *     <li>Each field annotated with {@link QueryFilterField} is mapped to a {@code List<String>}</li>
+ *     <li>Each field annotated with QueryFilterField is mapped to a {@code List<String>}</li>
  *     <li>Each field is annotated with Swagger / OpenAPI {@code @Parameter}</li>
  *     <li>The class itself is annotated with {@code @Schema}</li>
  * </ul>
  *
  * <p>
- * Although generated fields are of type {@link String}, their filtering semantics
- * (operators, parsing, etc.) are determined by {@link QueryFilterField#type()}.
+ * Although generated fields are of type String, their filtering semantics
+ * (operators, parsing, etc.) are determined by QueryFilterField type.
  * </p>
  *
  * <p>
@@ -77,15 +77,15 @@ public class QueryFilterDtoGenerator extends AbstractQueryFilterGenerator {
      * The generated class includes:
      * </p>
      * <ul>
-     *     <li>A {@code @Schema} annotation with a description derived from {@link QueryFilter#description()}</li>
-     *     <li>One field per {@link QueryFilterField}, each as {@code List<String>}</li>
+     *     <li>A {@code @Schema} annotation with a description derived from QueryFilter description</li>
+     *     <li>One field per QueryFilterField, each as {@code List<String>}</li>
      *     <li>Swagger {@code @Parameter} annotations with examples for each field</li>
      *     <li>Standard getter and setter methods</li>
      *     <li>An optional {@code dateFormat} field if date filtering is detected</li>
      * </ul>
      *
      * @param clazz the annotated class
-     * @param annotation the {@link QueryFilter} annotation instance
+     * @param annotation the QueryFilter annotation instance
      * @param name the name of the generated DTO class
      */
     @Override
