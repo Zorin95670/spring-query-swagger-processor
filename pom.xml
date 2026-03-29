@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.zorin95670</groupId>
   <artifactId>spring-query-swagger-processor</artifactId>
-  <version>0.2.0</version>
+  <version>0.2.1</version>
   <name>spring-query-swagger-processor</name>
   <description>Annotation processor generating Filter DTOs with Swagger annotations</description>
   <url>https://github.com/Zorin95670/spring-query-swagger-processor</url>
