@@ -43,7 +43,7 @@ The processor will generate a DTO:
 <dependency>
     <groupId>io.github.zorin95670</groupId>
     <artifactId>spring-query-swagger-processor</artifactId>
-    <version>1.0.0</version>
+    <version>X.Y.Z</version>
 </dependency>
 ```
 
