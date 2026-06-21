@@ -68,7 +68,7 @@ public class QueryFilterDtoGenerator extends AbstractQueryFilterGenerator {
      * @return the generated DTO name (e.g., {@code MyEntityQueryFilterDto})
      */
     public static String generateName(TypeElement typeElement) {
-        return typeElement.getSimpleName() + "QueryFilterDto";
+        return typeElement.getSimpleName() + "QueryFilterDTO";
     }
 
     /**
