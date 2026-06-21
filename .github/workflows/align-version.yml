@@ -1,6 +1,6 @@
 name: Align version with Spring Boot
 
-# Triggered when Dependabot opens/updates a PR on the spring-boot-maven-plugin
+# Triggered when Dependabot opens/updates a PR on the Spring Boot BOM
 on:
   pull_request:
     branches: [main]
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR branch
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
 
@@ -61,7 +61,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `🔧 \`source\`/\`target\` were automatically bumped to **${{ steps.align.outputs.new_java }}** to stay compatible with Spring Boot **${{ steps.align.outputs.new_version }}**.`
+              body: `🔧 \`java.version\` was automatically bumped to **${{ steps.align.outputs.new_java }}** to stay compatible with Spring Boot **${{ steps.align.outputs.new_version }}**.`
             })
 
       - name: Comment on PR — unknown compatibility mapping

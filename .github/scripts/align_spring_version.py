@@ -2,14 +2,8 @@
 """
 Automatically aligns:
   - the project's <version>
-  - the <java.version>/<source>/<target> compiler settings (if present)
-with the spring-boot-maven-plugin version declared in pom.xml.
-
-This variant reads the Spring Boot version from the <plugin> declaration
-under <build><plugins> (org.springframework.boot:spring-boot-maven-plugin),
-rather than from a spring-boot-dependencies BOM in <dependencyManagement>.
-Use this version for projects that only depend on the Spring Boot Maven
-plugin without importing the full BOM.
+  - the <java.version> property
+with the spring-boot-dependencies version declared in pom.xml.
 
 Usage:
     python align_spring_version.py pom.xml .github/spring-java-compat.yml
@@ -30,8 +24,6 @@ import yaml
 
 NS = {"m": "http://maven.apache.org/POM/4.0.0"}
 
-PROJECT_ARTIFACT_ID = "spring-query-swagger-processor"
-
 
 def fail(msg: str) -> None:
     print(f"::error::{msg}")
@@ -39,20 +31,23 @@ def fail(msg: str) -> None:
 
 
 def get_spring_boot_version(root: ET.Element) -> str:
-    """Reads the spring-boot-maven-plugin version from <build><plugins>."""
-    plugins = root.findall(".//m:build/m:plugins/m:plugin", NS)
-    for plugin in plugins:
-        group_id = plugin.find("m:groupId", NS)
-        artifact_id = plugin.find("m:artifactId", NS)
-        version = plugin.find("m:version", NS)
+    """Reads the spring-boot-dependencies version from dependencyManagement."""
+    deps = root.findall(
+        ".//m:dependencyManagement/m:dependencies/m:dependency", NS
+    )
+    for dep in deps:
+        group_id = dep.find("m:groupId", NS)
+        artifact_id = dep.find("m:artifactId", NS)
+        version = dep.find("m:version", NS)
         if (
-            artifact_id is not None
+            group_id is not None
+            and artifact_id is not None
             and version is not None
-            and artifact_id.text == "spring-boot-maven-plugin"
-            and (group_id is None or group_id.text == "org.springframework.boot")
+            and group_id.text == "org.springframework.boot"
+            and artifact_id.text == "spring-boot-dependencies"
         ):
             return version.text
-    fail("Could not find org.springframework.boot:spring-boot-maven-plugin in build/plugins")
+    fail("Could not find org.springframework.boot:spring-boot-dependencies in dependencyManagement")
 
 
 def ensure_clean_release_version(version: str) -> None:
@@ -86,23 +81,6 @@ def load_compat_map(path: str) -> dict:
     return {str(k): int(v) for k, v in data.items()}
 
 
-def read_current_java(raw: str) -> int:
-    """
-    Reads the current Java version. This project has no <java.version>
-    property; instead it's set directly in maven-compiler-plugin's
-    <source>/<target>. Both are expected to match.
-    """
-    source_match = re.search(r"<source>(\d+)</source>", raw)
-    target_match = re.search(r"<target>(\d+)</target>", raw)
-    if not source_match or not target_match:
-        fail("Could not read <source>/<target> in maven-compiler-plugin configuration")
-    source = int(source_match.group(1))
-    target = int(target_match.group(1))
-    if source != target:
-        fail(f"<source> ({source}) and <target> ({target}) differ, refusing to guess")
-    return source
-
-
 def update_pom(pom_path: str, raw: str, new_version: str, new_java: str | None) -> str:
     """
     Updates pom.xml as raw text (no full ElementTree rewrite, to avoid
@@ -111,25 +89,19 @@ def update_pom(pom_path: str, raw: str, new_version: str, new_java: str | None) 
     # 1. Project <version>...</version> — only the first occurrence,
     #    right after the project's own <artifactId> (no <parent> in this case).
     pattern_version = re.compile(
-        rf"(<artifactId>{PROJECT_ARTIFACT_ID}</artifactId>\s*<version>)[^<]+(</version>)"
+        r"(<artifactId>spring-query-filter</artifactId>\s*<version>)[^<]+(</version>)"
     )
     new_raw, count = pattern_version.subn(rf"\g<1>{new_version}\g<2>", raw, count=1)
     if count != 1:
         fail("Could not locate the project's <version> tag to update")
     raw = new_raw
 
-    # 2. <source>...</source> and <target>...</target> in maven-compiler-plugin
+    # 2. <java.version>...</java.version>
     if new_java is not None:
-        pattern_source = re.compile(r"(<source>)\d+(</source>)")
-        new_raw, count = pattern_source.subn(rf"\g<1>{new_java}\g<2>", raw, count=1)
+        pattern_java = re.compile(r"(<java\.version>)[^<]+(</java\.version>)")
+        new_raw, count = pattern_java.subn(rf"\g<1>{new_java}\g<2>", raw, count=1)
         if count != 1:
-            fail("Could not locate the <source> tag to update")
-        raw = new_raw
-
-        pattern_target = re.compile(r"(<target>)\d+(</target>)")
-        new_raw, count = pattern_target.subn(rf"\g<1>{new_java}\g<2>", raw, count=1)
-        if count != 1:
-            fail("Could not locate the <target> tag to update")
+            fail("Could not locate the <java.version> tag to update")
         raw = new_raw
 
     return raw
@@ -152,7 +124,10 @@ def main() -> None:
     compat_map = load_compat_map(compat_path)
     required_java = compat_map.get(mm)
 
-    current_java = read_current_java(raw_pom)
+    current_java_match = re.search(r"<java\.version>(\d+)</java\.version>", raw_pom)
+    if not current_java_match:
+        fail("Could not read <java.version> in pom.xml")
+    current_java = int(current_java_match.group(1))
 
     compat_unknown = required_java is None
     java_bumped = False
