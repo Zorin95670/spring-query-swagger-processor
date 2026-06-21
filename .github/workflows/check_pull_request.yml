@@ -21,8 +21,8 @@ jobs:
     steps:
       - uses: deepakputhraya/action-branch-name@master
         with:
-          regex: '^(feature|bugfix|improvement|library|prerelease|release|hotfix)\/[a-z0-9_.-]+$'
-          allowed_prefixes: 'feature,bugfix,improvement,library,prerelease,release,hotfix'
+          regex: '^(feature|bugfix|improvement|library|prerelease|release|hotfix)\/[a-z0-9_.-]+$|^dependabot\/.+$'
+          allowed_prefixes: 'feature,bugfix,improvement,library,prerelease,release,hotfix,dependabot'
           ignore: main
           min_length: 5
           max_length: 50
